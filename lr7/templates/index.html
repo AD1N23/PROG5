@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Currency Observer</title>
+</head>
+
+<body>
+    <h1>Currency Observer</h1>
+    <div id="client-id"></div>
+    <div id="currency-data"></div>
+
+    <script>
+        const ws = new WebSocket(`ws://${window.location.host}/ws`);
+        ws.onmessage = function (event) {
+            const data = JSON.parse(event.data);
+            if (data.client_id) {
+                document.getElementById('client-id').innerText = `Client ID: ${data.client_id}`;
+            } else {
+                let currencyHtml = '<ul>';
+                data.forEach(currency => {
+                    currencyHtml += `<li>${currency.Name}: ${currency.Value.integer_part}.${currency.Value.fractional_part} руб.</li>`;
+                });
+                currencyHtml += '</ul>';
+                document.getElementById('currency-data').innerHTML = currencyHtml;
+            }
+        };
+    </script>
+</body>
+
+</html>
